@@ -7,8 +7,21 @@ import java.util.regex.Pattern;
 
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
-// this should probably be kept as a star import for version safety
-import org.bukkit.entity.*;
+import org.bukkit.entity.Ageable;
+import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Guardian;
+import org.bukkit.entity.Horse;
+import org.bukkit.entity.MagmaCube;
+import org.bukkit.entity.Ocelot;
+import org.bukkit.entity.Pig;
+import org.bukkit.entity.Sheep;
+import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Slime;
+import org.bukkit.entity.Villager;
+import org.bukkit.entity.Wolf;
+import org.bukkit.entity.Zombie;
 
 import com.nisovin.magicspells.MagicSpells;
 
@@ -32,9 +45,13 @@ public class EntityData {
 			flag = true;
 			type = type.replace("baby ", "");
 		}
+		if (!V1_11EntityTypeHandler.isInitialized()) {
+			V1_11EntityTypeHandler.initialize();
+		}
 		if (type.equalsIgnoreCase("human") || type.equalsIgnoreCase("player")) {
 			type = "player";
-		} else if (type.equalsIgnoreCase("wither skeleton")) {
+		} else if (type.equalsIgnoreCase("wither skeleton") || 
+				type.equalsIgnoreCase("witherskeleton")) {
 			if (V1_11EntityTypeHandler.newEntityTypesPresent()) {
 				entityType = EntityType.WITHER_SKELETON;
 			} else {
@@ -43,10 +60,14 @@ public class EntityData {
 			type = "skeleton";
 			flag = true;
 		} else if (type.equalsIgnoreCase("zombie villager") || type.equalsIgnoreCase("villager zombie")) {
-			if (V1_11EntityTypeHandler.newEntityTypesPresent()) {
+			if (V1_11EntityTypeHandler.is1_12()) {
 				entityType = EntityType.ZOMBIE_VILLAGER;
+			} else {
+				if (V1_11EntityTypeHandler.newEntityTypesPresent()) {
+					entityType = EntityType.ZOMBIE_VILLAGER;
+				}
+				type = "zombie";
 			}
-			type = "zombie";
 			var1 = 1;
 		} else if (type.equalsIgnoreCase("powered creeper")) {
 			type = "creeper";
@@ -121,19 +142,47 @@ public class EntityData {
 			var1 = 1;
 			type = "pig";
 		} else if (type.equalsIgnoreCase("irongolem")) {
-			type = "villagergolem";
+			if (V1_11EntityTypeHandler.is1_12()) {
+				entityType = EntityType.IRON_GOLEM;
+			} else {
+				type = "villagergolem";
+			}
 		} else if (type.equalsIgnoreCase("mooshroom")) {
-			type = "mushroomcow";
+			if (V1_11EntityTypeHandler.is1_12()) {
+				entityType = EntityType.MUSHROOM_COW;
+			} else {
+				type = "mushroomcow";
+			}
 		} else if (type.equalsIgnoreCase("magmacube")) {
-			type = "lavaslime";
+			if (V1_11EntityTypeHandler.is1_12()) {
+				entityType = EntityType.MAGMA_CUBE;
+			} else {
+				type = "lavaslime";
+			}
 		} else if (type.toLowerCase().contains("ocelot")) {
-			type = type.toLowerCase().replace("ocelot", "ozelot");
+			if (V1_11EntityTypeHandler.is1_12()) {
+				entityType = EntityType.OCELOT;
+			} else {
+				type = type.toLowerCase().replace("ocelot", "ozelot");
+			}
 		} else if (type.equalsIgnoreCase("snowgolem")) {
 			type = "snowman";
 		} else if (type.equalsIgnoreCase("wither")) {
-			type = "witherboss";
+			if (V1_11EntityTypeHandler.is1_12()) {
+				entityType = EntityType.WITHER;
+			} else {
+				type = "witherboss";
+			}
 		} else if (type.equalsIgnoreCase("dragon")) {
-			type = "enderdragon";
+			if (V1_11EntityTypeHandler.is1_12()) {
+				entityType = EntityType.ENDER_DRAGON;
+			} else {
+				type = "enderdragon";
+			}
+		} else if (type.equalsIgnoreCase("enderdragon")) {
+			if (V1_11EntityTypeHandler.is1_12()) { 
+				entityType = EntityType.ENDER_DRAGON;
+			}
 		} else if (type.toLowerCase().startsWith("block") || type.toLowerCase().startsWith("fallingblock")) {
 			String data = type.split(" ")[1];
 			if (data.contains(":")) {
@@ -142,6 +191,9 @@ public class EntityData {
 				var2 = Integer.parseInt(subdata[1]);
 			} else {
 				var1 = Integer.parseInt(data);
+			}
+			if (V1_11EntityTypeHandler.is1_12()) {
+				entityType = EntityType.DROPPED_ITEM;
 			}
 			type = "fallingsand";
 		} else if (type.toLowerCase().startsWith("item")) {
@@ -212,27 +264,54 @@ public class EntityData {
 		} else if (type.equalsIgnoreCase("donkey")) {
 			var1 = 1;
 			type = "entityhorse";
-		} else if (type.equalsIgnoreCase("elder guardian")) {
+		} else if (type.equalsIgnoreCase("elder guardian")
+				|| type.equalsIgnoreCase("elderguardian")) {
 			if (V1_11EntityTypeHandler.newEntityTypesPresent()) {
 				entityType = EntityType.ELDER_GUARDIAN;
 			}
 			flag = true;
 			type = "guardian";
-		}
-		if (RegexUtil.matches(PATTERN_OZELOT_TYPE_DIGIT, type.toLowerCase())) {
+		} else if (RegexUtil.matches(PATTERN_OZELOT_TYPE_DIGIT, type.toLowerCase())) {
 			var1 = Integer.parseInt(type.split(" ")[1]);
-			type = "ozelot";
+			if (V1_11EntityTypeHandler.is1_12()) {
+				entityType = EntityType.OCELOT;
+			} else {
+				type = "ozelot";
+			}
 		} else if (type.toLowerCase().equals("ozelot random") || type.toLowerCase().equals("random ozelot")) {
 			var1 = -1;
-			type = "ozelot";
-		}
-		if (type.equals("slime") || type.equals("lavaslime")) {
+			if (V1_11EntityTypeHandler.is1_12()) {
+				entityType = EntityType.OCELOT;
+			} else {
+				type = "ozelot";
+			}
+		} else if (type.equals("slime") || type.equals("lavaslime")) {
 			var1 = 1;
 		} else if (type.startsWith("slime") || type.startsWith("magmacube") || type.startsWith("lavaslime")) {
 			String[] data = type.split(" ");
 			type = data[0];
-			if (type.equals("magmacube")) type = "lavaslime";
-			var1 = Integer.parseInt(data[1]);
+			if (type.equals("magmacube")) {
+				if (V1_11EntityTypeHandler.is1_12()) {
+					entityType = EntityType.MAGMA_CUBE;
+				} else {
+					type = "lavaslime";
+				}
+			}
+			if (data.length > 1) {
+				var1 = Integer.parseInt(data[1]);
+			}
+		} else if (type.equalsIgnoreCase("cavespider")) {
+			if (V1_11EntityTypeHandler.is1_12()) {
+				entityType = EntityType.CAVE_SPIDER;
+			}
+		} else if (type.equalsIgnoreCase("pigzombie")) {
+			if (V1_11EntityTypeHandler.is1_12()) {
+				entityType = EntityType.PIG_ZOMBIE;
+			}
+		} else if (type.equalsIgnoreCase("zombievillager")) {
+			if (V1_11EntityTypeHandler.is1_12()) {
+				entityType = EntityType.ZOMBIE_VILLAGER;
+			}
 		}
 		if (entityType == null) {
 			if (type.equals("player")) {
