@@ -292,6 +292,12 @@ public class DisguiseManagerLibsDisguises implements Listener, IDisguiseManager 
 				h.setHorseArmor(horseArmor);
 			}
 		}
+		if (dis.getEntityType() == EntityType.ZOMBIE ||
+				dis.getEntityType() == EntityType.ZOMBIE_VILLAGER) {
+			if (!((ZombieWatcher)w).isBaby() && dis.getFlag()) {
+				((ZombieWatcher)w).setBaby();
+			}
+		}
 		
 		if (dis.getNameplateText() != null && !dis.getNameplateText().isEmpty()) {
 			w.setCustomName(dis.getNameplateText());
