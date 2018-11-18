@@ -193,7 +193,7 @@ public class EntityData {
 				var1 = Integer.parseInt(data);
 			}
 			if (V1_11EntityTypeHandler.is1_12()) {
-				entityType = EntityType.DROPPED_ITEM;
+				entityType = EntityType.FALLING_BLOCK;
 			}
 			type = "fallingsand";
 		} else if (type.toLowerCase().startsWith("item")) {
