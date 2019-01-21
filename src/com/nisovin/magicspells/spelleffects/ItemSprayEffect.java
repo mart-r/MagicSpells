@@ -1,9 +1,9 @@
 package com.nisovin.magicspells.spelleffects;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.util.Vector;
 
@@ -188,14 +189,15 @@ public class ItemSprayEffect extends SpellEffect {
 	}
 	
 	private static class TeleportListener implements Listener {
-		private final Item[] items;
+		private final Set<Item> items;
 		private final Player player;
 		
 		public TeleportListener(Player player, Item[] items) {
 			if (player != null) {
 				MagicSpells.registerEvents(this);
 			}
-			this.items = items;
+			this.items = new HashSet<>();
+			this.items.addAll(Arrays.asList(items));
 			this.player = player;
 		}
 		
@@ -206,6 +208,13 @@ public class ItemSprayEffect extends SpellEffect {
 					i.remove();
 				}
 				HandlerList.unregisterAll(this);
+			}
+		}
+		
+		@EventHandler
+		public void onHopperPickup(InventoryPickupItemEvent event) {
+			if (items.contains(event.getItem())) {
+				event.setCancelled(true);
 			}
 		}
 	}
