@@ -165,6 +165,21 @@ public class EntityData {
 			} else {
 				type = type.toLowerCase().replace("ocelot", "ozelot");
 			}
+			if (RegexUtil.matches(PATTERN_OZELOT_TYPE_DIGIT, type.toLowerCase())) {
+				var1 = Integer.parseInt(type.split(" ")[1]);
+				if (V1_11EntityTypeHandler.is1_12()) {
+					entityType = EntityType.OCELOT;
+				} else {
+					type = "ozelot";
+				}
+			} else if (type.toLowerCase().equals("ozelot random") || type.toLowerCase().equals("random ozelot")) {
+				var1 = -1;
+				if (V1_11EntityTypeHandler.is1_12()) {
+					entityType = EntityType.OCELOT;
+				} else {
+					type = "ozelot";
+				}
+			} 
 		} else if (type.equalsIgnoreCase("snowgolem")) {
 			type = "snowman";
 		} else if (type.equalsIgnoreCase("wither")) {
@@ -271,20 +286,6 @@ public class EntityData {
 			}
 			flag = true;
 			type = "guardian";
-		} else if (RegexUtil.matches(PATTERN_OZELOT_TYPE_DIGIT, type.toLowerCase())) {
-			var1 = Integer.parseInt(type.split(" ")[1]);
-			if (V1_11EntityTypeHandler.is1_12()) {
-				entityType = EntityType.OCELOT;
-			} else {
-				type = "ozelot";
-			}
-		} else if (type.toLowerCase().equals("ozelot random") || type.toLowerCase().equals("random ozelot")) {
-			var1 = -1;
-			if (V1_11EntityTypeHandler.is1_12()) {
-				entityType = EntityType.OCELOT;
-			} else {
-				type = "ozelot";
-			}
 		} else if (type.equals("slime") || type.equals("lavaslime")) {
 			var1 = 1;
 		} else if (type.startsWith("slime") || type.startsWith("magmacube") || type.startsWith("lavaslime")) {
