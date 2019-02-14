@@ -36,7 +36,7 @@ public class EntityData {
 	private static final Pattern PATTERN_VILLAGER_PROFESSION_INT = Pattern.compile("^[0-5]$");
 	private static final Pattern PATTERN_WOLF_COLLAR = Pattern.compile("[0-9a-fA-F]+");
 	private static final Pattern PATTERN_HORSE_ARMOR_TYPE = Pattern.compile("^[0-9]+$");
-	private static final Pattern PATTERN_OZELOT_TYPE_DIGIT = Pattern.compile("ozelot [0-3]");
+	private static final Pattern PATTERN_OZELOT_TYPE_DIGIT = Pattern.compile("o[cz]elot [0-3]");
 	
 	// TODO change this to use a config formatting instead with legacy support for strings temporarily here
 	// TODO the new format should use properties which check if their targets are possible on this version of spigot
@@ -167,19 +167,9 @@ public class EntityData {
 			}
 			if (RegexUtil.matches(PATTERN_OZELOT_TYPE_DIGIT, type.toLowerCase())) {
 				var1 = Integer.parseInt(type.split(" ")[1]);
-				if (V1_11EntityTypeHandler.is1_12()) {
-					entityType = EntityType.OCELOT;
-				} else {
-					type = "ozelot";
-				}
 			} else if (type.toLowerCase().equals("ozelot random") || type.toLowerCase().equals("random ozelot")) {
 				var1 = -1;
-				if (V1_11EntityTypeHandler.is1_12()) {
-					entityType = EntityType.OCELOT;
-				} else {
-					type = "ozelot";
-				}
-			} 
+			}
 		} else if (type.equalsIgnoreCase("snowgolem")) {
 			type = "snowman";
 		} else if (type.equalsIgnoreCase("wither")) {
@@ -369,6 +359,9 @@ public class EntityData {
 				((Wolf)entity).setAngry(true);
 			}
 		} else if (entityType == EntityType.OCELOT) {
+			if (var1 == -1) {
+				var1 = (int) Math.floor(Math.random() * 4);
+			}
 			if (var1 == 0) {
 				((Ocelot)entity).setCatType(Ocelot.Type.WILD_OCELOT);
 			} else if (var1 == 1) {
